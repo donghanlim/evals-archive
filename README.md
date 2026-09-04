@@ -1,4 +1,4 @@
-# evals-archive · evals 수집 파이프라인
+# evals-archive · evals 수집·20주 실습 기록
 
 | 항목 | 값 |
 |---|---|
@@ -6,19 +6,24 @@
 | 구역 | _personal |
 | 로컬 | `/Users/justimmacbook/Documents/_personal/evals-archive` |
 | GitHub | `donghanlim/evals-archive` |
-| 상태 | 구조화 완료 · 내용 채우는 중 |
+| 상태 | 수집 파이프라인 운영 · 20주 실습 2026-09-07 시작 |
 | 최종 갱신 | 2026-09-04 |
 
 ## 현재 상태
 
-(작업 시작 시 여기부터 갱신)
+- evals 관련 자료 수집 파이프라인을 운영·관리한다.
+- 실습과 자가 포트폴리오 데이터는 `docs/20-week-cycle-2026-09-07/`에 주차별로 기록한다.
+- 과거 계획 구간은 `past/2026-08-03--2026-09-06.md`에 미착수 상태로 보존한다.
+- 새 cycle은 2026-09-07 월요일부터 20주간 진행한다.
 
 ## 다음 행동
 
-- [ ] 기존 자료를 `docs/` 로 이관
-- [ ] `files/` 링크 대상 원본 정리
+- [ ] Week 1 목표와 실습 대상을 확정
+- [ ] 실행 결과·실패 분류·재검증 결과 기록
+- [ ] 포트폴리오로 남길 산출물과 evidence 연결
 
 ## 정본 링크
 
+- 진행관리·기록 허브: `~/Documents/_personal/portfolio/docs/projects/evals/`
 - 지식·결정: `~/Documents/_personal/my_brain` (`#evals-archive`)
 - 원본·증빙: `./files/`
