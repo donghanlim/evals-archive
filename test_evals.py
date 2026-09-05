@@ -242,10 +242,44 @@ def test_generate_respects_budget_and_order():
         stats = E.generate(con, budget=2)
     finally:
         E.llm_note = orig
-    assert stats == {"generated": 3, "llm": 2, "fallback": 1, "fulltext": 0}, stats
+    assert stats == {"generated": 3, "llm": 2, "fallback": 1, "fulltext": 0, "regenerated": 0}, stats
     assert calls == ["item2", "item1"], f"high·우선순위 순서가 아니다: {calls}"
     assert con.execute("SELECT COUNT(*) c FROM notes").fetchone()["c"] == 3
-    assert E.generate(con, budget=2)["generated"] == 0, "이미 생성된 항목을 다시 만들면 안 된다"
+    assert E.generate(con, budget=0)["generated"] == 0, "예산이 없으면 fallback 을 또 fallback 으로 덮지 않는다"
+    con.close()
+
+
+@check
+def test_generate_replaces_fallback_when_budget_frees_up():
+    """예산 소진으로 fallback 이 된 노트는 다음 실행에서 LLM 판으로 교체된다. 단 사람이 수용한 건 건드리지 않는다."""
+    db = os.path.join(tempfile.mkdtemp(), "n.db")
+    con = E.connect(db)
+    orig = E.llm_note
+    E.llm_note = lambda title, excerpt: dict(GOOD, generator="llm:test", warnings=[])
+    try:
+        for i in range(2):
+            con.execute("INSERT INTO items(title,url,canonical_url,content_hash,excerpt,gate,gate_reason,collected_at)"
+                        " VALUES(?,?,?,?,'본문','new','',?)", (f"item{i}", f"u{i}", f"u{i}", f"h{i}", E.now()))
+            iid = con.execute("SELECT last_insert_rowid() r").fetchone()["r"]
+            con.execute("INSERT INTO assessments(item_id,score,confidence,eligibility,topics,priority,policy_version,created_at)"
+                        " VALUES(?,50,80,'high','[\"rag\"]',50,?,?)", (iid, E.POLICY_VERSION, E.now()))
+        con.commit()
+        assert E.generate(con, budget=0) == {"generated": 2, "llm": 0, "fallback": 2, "fulltext": 0, "regenerated": 0}
+
+        # 하나는 사람이 수용 → 확정본이므로 교체 대상에서 빠진다
+        kept = con.execute("SELECT item_id FROM notes ORDER BY id LIMIT 1").fetchone()["item_id"]
+        con.execute("INSERT INTO feedback(item_id,decision,reviewer,created_at) VALUES(?,'accepted','me',?)",
+                    (kept, E.now()))
+        con.commit()
+
+        stats = E.generate(con, budget=8)
+    finally:
+        E.llm_note = orig
+    assert stats["regenerated"] == 1 and stats["llm"] == 1, stats
+    gens = dict(con.execute("SELECT item_id, generator FROM notes").fetchall())
+    assert gens[kept] == "fallback", "사람이 수용한 노트를 덮어썼다"
+    assert con.execute("SELECT COUNT(*) c FROM notes WHERE generator='llm:test'").fetchone()["c"] == 1
+    assert con.execute("SELECT COUNT(*) c FROM notes").fetchone()["c"] == 2, "교체인데 노트가 늘었다"
     con.close()
 
 
@@ -403,7 +437,11 @@ def test_report_surfaces_alerts():
     con, ids = _accepted_fixture()
     out = E.report(con)
     assert "사람 수용 2건" in out
-    assert "fallback 노트" in out, out
+    assert "fallback" not in out, f"사람이 수용한 fallback 은 확정본이라 경보 대상이 아니다: {out}"
+    con.execute("INSERT INTO notes(item_id,summary,practical,terms,points,difficulty,generator,warnings,created_at)"
+                " VALUES(?,'요약3','실무3','[]','[]','intermediate','fallback','[]',?)", (ids[2], E.now()))
+    con.commit()
+    assert "미교체 fallback 노트 1건" in E.report(con), "수용되지 않은 fallback 은 경보로 떠야 한다"
     con.execute("UPDATE sources SET enabled=0, fail_streak=3 WHERE name=?", (E.DEFAULT_SOURCES[0][0],))
     con.commit()
     assert "연속 실패 3회" in E.report(con)

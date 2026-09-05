@@ -788,14 +788,17 @@ def build_note(title: str, excerpt: str, topics: list[str], use_llm: bool = True
 def generate(con: sqlite3.Connection, budget: int = GEN_BUDGET) -> dict:
     """적합 후보에만 콘텐츠를 만든다. high 우선, 예산 소진 후에는 fallback 으로 기록한다."""
     rows = con.execute(
-        "SELECT i.id, i.title, i.url, i.excerpt, a.topics, a.eligibility, a.priority FROM items i "
+        "SELECT i.id, i.title, i.url, i.excerpt, a.topics, a.eligibility, a.priority, n.id AS note_id FROM items i "
         "JOIN assessments a ON a.item_id=i.id LEFT JOIN notes n ON n.item_id=i.id "
-        "WHERE i.gate='new' AND n.id IS NULL "
+        "WHERE i.gate='new' AND (n.id IS NULL OR (n.generator='fallback' AND NOT EXISTS("
+        "  SELECT 1 FROM feedback f WHERE f.item_id=i.id AND f.decision LIKE 'accepted%'))) "
         "ORDER BY CASE a.eligibility WHEN 'high' THEN 0 ELSE 1 END, a.priority DESC").fetchall()
-    stats = {"generated": 0, "llm": 0, "fallback": 0, "fulltext": 0}
+    stats = {"generated": 0, "llm": 0, "fallback": 0, "fulltext": 0, "regenerated": 0}
     for row in rows:
         topics = json.loads(row["topics"])
         use_llm = stats["llm"] < budget
+        if row["note_id"] and not use_llm:
+            continue                                # fallback 을 또 fallback 으로 덮지 않는다
         source, extra = row["excerpt"], []
         if use_llm:                                 # 예산 안일 때만 전문을 받는다
             full, label = fetch_fulltext(row["url"])
@@ -806,6 +809,9 @@ def generate(con: sqlite3.Connection, budget: int = GEN_BUDGET) -> dict:
                 extra = [f"전문 수집 실패({label}) — 발췌문으로 요약"]
         note = build_note(row["title"], source, topics, use_llm=use_llm)
         note["warnings"] = note.get("warnings", []) + extra
+        if row["note_id"]:                          # 예산이 남으면 fallback 을 LLM 판으로 교체
+            con.execute("DELETE FROM notes WHERE id=?", (row["note_id"],))
+            stats["regenerated"] += 1
         con.execute("INSERT INTO notes(item_id,summary,practical,terms,points,difficulty,generator,warnings,created_at)"
                     " VALUES(?,?,?,?,?,?,?,?,?)",
                     (row["id"], note["summary"], note["practical"],
@@ -1234,7 +1240,8 @@ def report(con: sqlite3.Connection) -> str:
     accepted = q("SELECT COUNT(DISTINCT item_id) FROM feedback WHERE decision IN ('accepted','accepted_with_edits')")
     edits = q("SELECT COUNT(DISTINCT item_id) FROM feedback WHERE decision='accepted_with_edits'")
     ungenerated = q("SELECT COUNT(*) FROM items i LEFT JOIN notes n ON n.item_id=i.id WHERE i.gate='new' AND n.id IS NULL")
-    fallbacks = q("SELECT COUNT(*) FROM notes WHERE generator='fallback'")
+    pending_fallbacks = q("SELECT COUNT(*) FROM notes n WHERE n.generator='fallback' AND NOT EXISTS("
+                          "SELECT 1 FROM feedback f WHERE f.item_id=n.item_id AND f.decision LIKE 'accepted%')")
     last = con.execute("SELECT id,status,started_at,stats FROM runs ORDER BY id DESC LIMIT 1").fetchone()
     stats = json.loads(last["stats"]) if last else {}
 
@@ -1246,8 +1253,8 @@ def report(con: sqlite3.Connection) -> str:
         alerts.append(f"오류: 피드 실패 {stats['feed_failures']}건 — {'; '.join(stats.get('errors', []))[:160]}")
     if accepted and edits / accepted > 0.2:
         alerts.append(f"품질: 사람 수정률 {edits / accepted:.0%} (기준 20%) — 분류 정책 재검토")
-    if fallbacks:
-        alerts.append(f"모델: fallback 노트 {fallbacks}건 — LLM 미설정 또는 생성 실패")
+    if pending_fallbacks:                           # 사람이 수용한 fallback 은 확정본이라 세지 않는다
+        alerts.append(f"모델: 미교체 fallback 노트 {pending_fallbacks}건 — generate 재실행으로 LLM 판 교체")
     for r in con.execute("SELECT s.name, COUNT(*) c FROM items i JOIN sources s ON s.id=i.source_id "
                          "WHERE i.gate='new' GROUP BY 1 ORDER BY c DESC"):
         if new and r["c"] / new > 0.5:
