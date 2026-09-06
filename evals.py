@@ -310,11 +310,29 @@ def _check_host(url: str) -> None:
         raise ValueError(f"허용 목록 밖의 host: {host}")  # SSRF 방어
 
 
+_LAST_FETCH_AT: dict[str, float] = {}
+FETCH_MIN_INTERVAL = 3.0  # 같은 호스트 연속 호출 사이 최소 간격(초) — 429 예방
+
+
 def fetch(url: str, timeout: int = FETCH_TIMEOUT) -> bytes:
     _check_host(url)
+    host = urlsplit(url).netloc
+    wait = FETCH_MIN_INTERVAL - (time.monotonic() - _LAST_FETCH_AT.get(host, 0.0))
+    if wait > 0:
+        time.sleep(wait)
     req = request.Request(url, headers={"User-Agent": USER_AGENT})
-    with request.urlopen(req, timeout=timeout) as resp:
-        return resp.read(MAX_BYTES)
+    try:
+        with request.urlopen(req, timeout=timeout) as resp:
+            return resp.read(MAX_BYTES)
+    except error.HTTPError as exc:
+        if exc.code == 429:
+            retry_wait = float(exc.headers.get("retry-after") or 15)
+            time.sleep(min(retry_wait, 60))
+            with request.urlopen(req, timeout=timeout) as resp:
+                return resp.read(MAX_BYTES)
+        raise
+    finally:
+        _LAST_FETCH_AT[host] = time.monotonic()
 
 
 def normalize_date(raw: str) -> str:
