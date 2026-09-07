@@ -492,6 +492,29 @@ def test_groq_requires_key_without_network():
             os.environ["GROQ_API_KEY"] = saved
 
 @check
+def test_groq_multi_key_rotates_on_429_then_succeeds():
+    saved = os.environ.get("GROQ_API_KEY")
+    os.environ["GROQ_API_KEY"] = "key-a, key-b"
+    seen_keys = []
+    def fake(url, payload, headers=None, timeout=None):
+        key = headers["Authorization"].split(" ")[1]
+        seen_keys.append(key)
+        if key == "key-a":
+            raise ValueError("무료 한도 초과(429), 600초 대기 필요")
+        return {"choices": [{"message": {"content": json.dumps(GOOD)}}]}
+    orig = E.post_json
+    E.post_json = fake
+    try:
+        E.note_groq("t", "본문")
+        assert seen_keys == ["key-a", "key-b"], seen_keys
+    finally:
+        E.post_json = orig
+        if saved is None:
+            os.environ.pop("GROQ_API_KEY", None)
+        else:
+            os.environ["GROQ_API_KEY"] = saved
+
+@check
 def test_ollama_payload_shape():
     seen = {}
     orig = E.post_json

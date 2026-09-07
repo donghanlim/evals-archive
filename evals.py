@@ -8,7 +8,7 @@
   운영 총괄         : report / export
 
 공급자: EVALS_PROVIDERS 순서대로 시도, 전부 실패하면 결정적 fallback (기본 groq,ollama)
-  groq      GROQ_API_KEY 필요 · EVALS_GROQ_MODEL (기본 qwen/qwen3.8-27b)
+  groq      GROQ_API_KEY 필요 (콤마로 여러 키 나열 시 429에서 순환) · EVALS_GROQ_MODEL (기본 qwen/qwen3.8-27b)
   ollama    키 불필요 · EVALS_OLLAMA_MODEL (기본 exaone3.5:7.8b)
   anthropic ANTHROPIC_API_KEY + pip install anthropic
 
@@ -724,17 +724,25 @@ def note_ollama(title: str, excerpt: str) -> dict:
 
 
 def note_groq(title: str, excerpt: str) -> dict:
-    """Groq (OpenAI 호환). GROQ_API_KEY 필요."""
-    key = os.environ.get("GROQ_API_KEY")
-    if not key:
+    """Groq (OpenAI 호환). GROQ_API_KEY 필요, 콤마로 여러 키를 주면 429 시 다음 키로 순환한다."""
+    keys = [k.strip() for k in os.environ.get("GROQ_API_KEY", "").split(",") if k.strip()]
+    if not keys:
         raise ValueError("GROQ_API_KEY 가 설정되지 않음")
-    d = post_json(f"{GROQ_URL}/chat/completions", {
-        "model": GROQ_MODEL, "temperature": 0.2, "max_tokens": 2000,
-        "response_format": {"type": "json_object"},
-        "messages": [{"role": "system", "content": SYSTEM_PROMPT},
-                     {"role": "user", "content": user_prompt(title, excerpt)}]},
-        headers={"Authorization": f"Bearer {key}"})
-    return parse_note(d["choices"][0]["message"]["content"])
+    last_err = None
+    for key in keys:
+        try:
+            d = post_json(f"{GROQ_URL}/chat/completions", {
+                "model": GROQ_MODEL, "temperature": 0.2, "max_tokens": 2000,
+                "response_format": {"type": "json_object"},
+                "messages": [{"role": "system", "content": SYSTEM_PROMPT},
+                             {"role": "user", "content": user_prompt(title, excerpt)}]},
+                headers={"Authorization": f"Bearer {key}"})
+            return parse_note(d["choices"][0]["message"]["content"])
+        except ValueError as exc:
+            if "429" not in str(exc) and "한도" not in str(exc):
+                raise
+            last_err = exc  # 이 키가 한도 초과 -> 다음 키로 순환
+    raise last_err
 
 
 def note_anthropic(title: str, excerpt: str) -> dict:
@@ -1195,12 +1203,14 @@ def check_providers() -> str:
     except Exception as exc:
         out.append(f"  사용 불가: {type(exc).__name__}: {str(exc)[:120]} (ollama serve 확인)")
 
-    out.append("\n[groq] GROQ_API_KEY 필요")
-    key = os.environ.get("GROQ_API_KEY")
-    if not key:
+    out.append("\n[groq] GROQ_API_KEY 필요 (콤마로 여러 키 나열 시 429에서 순환)")
+    raw_key = os.environ.get("GROQ_API_KEY", "")
+    keys = [k.strip() for k in raw_key.split(",") if k.strip()]
+    if not keys:
         out.append("  키 미설정 — https://console.groq.com/keys 에서 발급 후 export GROQ_API_KEY=...")
     else:
-        out.append(f"  키 설정됨 ({len(key)}자)")
+        key = keys[0]
+        out.append(f"  키 {len(keys)}개 설정됨" if len(keys) > 1 else f"  키 설정됨 ({len(key)}자)")
         try:
             ids = sorted(m["id"] for m in json.loads(
                 fetch_any(f"{GROQ_URL}/models", timeout=15, headers={"Authorization": f"Bearer {key}"}))["data"])
