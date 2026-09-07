@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/donghanlim/evals-archive/schema/golden.schema.json",
+  "title": "Common Golden Set Case",
+  "description": "프로젝트별 원본 케이스를 adapter가 정규화한 뒤 만족해야 하는 공통 평가 케이스 스키마입니다.",
+  "type": "object",
+  "required": ["id", "project", "input", "expected", "failure_type", "source"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "project": {"type": "string", "minLength": 1},
+    "input": {"type": "object"},
+    "expected": {"type": "object"},
+    "failure_type": {"type": "string", "minLength": 1},
+    "source": {"type": "string", "minLength": 1},
+    "group": {"type": "string"},
+    "notes": {"type": "string"},
+    "metadata": {"type": "object"}
+  },
+  "additionalProperties": true
+}

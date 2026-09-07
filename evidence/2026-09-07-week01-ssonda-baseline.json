@@ -1,0 +1,107 @@
+{
+  "case_count": 44,
+  "metrics": {
+    "accuracy": 0.3409090909090909,
+    "precision": 0.6111111111111112,
+    "recall": 0.3055555555555556,
+    "f1": 0.40740740740740744,
+    "correct": 15
+  },
+  "confusion_matrix": {
+    "tp": 11,
+    "fp": 7,
+    "fn": 25,
+    "tn": 4
+  },
+  "failure_types": {
+    "amount_fee_mismatch": {
+      "n": 5,
+      "pass": 0,
+      "fail_ids": [
+        "af-01",
+        "af-02",
+        "af-03",
+        "af-04",
+        "af-05"
+      ]
+    },
+    "clean_match": {
+      "n": 8,
+      "pass": 8,
+      "fail_ids": []
+    },
+    "clean_no_match": {
+      "n": 4,
+      "pass": 4,
+      "fail_ids": []
+    },
+    "code_collision": {
+      "n": 5,
+      "pass": 2,
+      "fail_ids": [
+        "cc-01",
+        "cc-02",
+        "cc-03"
+      ]
+    },
+    "code_position_or_typo": {
+      "n": 5,
+      "pass": 0,
+      "fail_ids": [
+        "ct-01",
+        "ct-02",
+        "ct-03",
+        "ct-04",
+        "ct-05"
+      ]
+    },
+    "missing_code_unique_otherwise": {
+      "n": 5,
+      "pass": 0,
+      "fail_ids": [
+        "mc-01",
+        "mc-02",
+        "mc-03",
+        "mc-04",
+        "mc-05"
+      ]
+    },
+    "name_substring_false_id": {
+      "n": 5,
+      "pass": 1,
+      "fail_ids": [
+        "ns-01",
+        "ns-02",
+        "ns-03",
+        "ns-04"
+      ]
+    },
+    "proxy_deposit": {
+      "n": 2,
+      "pass": 0,
+      "fail_ids": [
+        "px-01",
+        "px-02"
+      ]
+    },
+    "time_window_exceeded": {
+      "n": 5,
+      "pass": 0,
+      "fail_ids": [
+        "tw-01",
+        "tw-02",
+        "tw-03",
+        "tw-04",
+        "tw-05"
+      ]
+    }
+  },
+  "schema_version": "golden-case/v1",
+  "runner_version": "week01-v1",
+  "adapter": "ssonda-v1",
+  "run_at_utc": "2026-09-06T23:15:15+00:00",
+  "dataset": "/Users/justimmacbook/Documents/_work/_lab/ssonda/evals/golden.jsonl",
+  "dataset_sha256": "8536dfc272c29ede15880dfb80aa84755b72129652e994070dad20b5ecd1d637",
+  "bridge": "/Users/justimmacbook/Documents/_work/_lab/ssonda/evals/bridge.mjs",
+  "bridge_sha256": "b557c037a38471e02aea701d8368c9026170686787b1d3b31e5678ec36c28804"
+}
