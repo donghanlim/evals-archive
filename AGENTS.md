@@ -21,6 +21,10 @@
 - 진행상태와 전체 포트폴리오 연결은 `~/Documents/_personal/portfolio`에서 관리
 - 측정되지 않은 수치와 소급 성과를 만들지 않음
 
+## 도구
+
+- 브라우저 작업이 필요하면 `aside` MCP tools를 사용한다. (`opencode` 전역 설정에 `aside mcp` 연결됨)
+
 ## 작업 순서
 
 1. `README.md`와 `docs/20-week-cycle-2026-09-07/README.md`에서 현재 상태 확인
