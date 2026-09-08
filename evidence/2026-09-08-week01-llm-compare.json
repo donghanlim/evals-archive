@@ -1,0 +1,1123 @@
+{
+  "experiment": "week01-r2 farmlog+ssonda LLM model comparison (pilot)",
+  "date": "2026-09-08 KST",
+  "models": {
+    "A": "opencode/muse-spark-1.3-contributor-free (thinking medium, Aside session)",
+    "B": "claude opus 5 high (claude.ai web, Pro)"
+  },
+  "ssonda_pilot": {
+    "rows": [
+      {
+        "id": "cm-01",
+        "category": "clean_match",
+        "expected": "p1",
+        "spark": "p1",
+        "spark_hit": true,
+        "opus": "p1",
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "nm-02",
+        "category": "clean_no_match",
+        "expected": null,
+        "spark": null,
+        "spark_hit": true,
+        "opus": null,
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "af-01",
+        "category": "amount_fee_mismatch",
+        "expected": "p1",
+        "spark": "p1",
+        "spark_hit": true,
+        "opus": "p1",
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "tw-02",
+        "category": "time_window_exceeded",
+        "expected": "p1",
+        "spark": "p1",
+        "spark_hit": true,
+        "opus": "p1",
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "cc-01",
+        "category": "code_collision",
+        "expected": "p2",
+        "spark": "p2",
+        "spark_hit": true,
+        "opus": "p2",
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "cc-02",
+        "category": "code_collision",
+        "expected": "p2",
+        "spark": "p2",
+        "spark_hit": true,
+        "opus": "p2",
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "ns-01",
+        "category": "name_substring_false_id",
+        "expected": null,
+        "spark": null,
+        "spark_hit": true,
+        "opus": null,
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "ct-02",
+        "category": "code_position_or_typo",
+        "expected": "p1",
+        "spark": "p1",
+        "spark_hit": true,
+        "opus": "p1",
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "mc-01",
+        "category": "missing_code_unique_otherwise",
+        "expected": "p1",
+        "spark": "p1",
+        "spark_hit": true,
+        "opus": "p1",
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "px-01",
+        "category": "proxy_deposit",
+        "expected": "p1",
+        "spark": "p1",
+        "spark_hit": true,
+        "opus": "p1",
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "ns-02",
+        "category": "name_substring_false_id",
+        "expected": null,
+        "spark": null,
+        "spark_hit": true,
+        "opus": null,
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "ns-03",
+        "category": "name_substring_false_id",
+        "expected": null,
+        "spark": null,
+        "spark_hit": true,
+        "opus": null,
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "ns-04",
+        "category": "name_substring_false_id",
+        "expected": null,
+        "spark": null,
+        "spark_hit": true,
+        "opus": null,
+        "opus_hit": true,
+        "agree": true
+      },
+      {
+        "id": "ns-05",
+        "category": "name_substring_false_id",
+        "expected": "p1",
+        "spark": "p1",
+        "spark_hit": true,
+        "opus": "p1",
+        "opus_hit": true,
+        "agree": true
+      }
+    ],
+    "summary": {
+      "n": 14,
+      "spark_acc": 14,
+      "opus_acc": 14,
+      "diffs": []
+    }
+  },
+  "farmlog_30": {
+    "model_spark": "opencode/muse-spark-1.3-contributor-free (thinking medium)",
+    "model_opus": "claude opus 5 high (new window)",
+    "dataset": "farm-log eval/cases.jsonl 30 fixtures (synthetic)",
+    "result": {
+      "spark_case": "30/30",
+      "spark_field": "210/210",
+      "opus_case": "27/30",
+      "opus_field": "204/210",
+      "opus_miss_cases": [
+        "ambiguous",
+        "multi-parcel",
+        "multi-crop"
+      ]
+    },
+    "spark_rows": [
+      {
+        "id": "normal",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 20,
+        "unit": "L",
+        "missing": []
+      },
+      {
+        "id": "missing",
+        "worked_at": null,
+        "parcel_id": null,
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "worked_at",
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "multiple",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "work_type"
+        ]
+      },
+      {
+        "id": "ambiguous",
+        "worked_at": null,
+        "parcel_id": null,
+        "crop": null,
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "worked_at",
+          "parcel_id",
+          "crop",
+          "work_type"
+        ]
+      },
+      {
+        "id": "spray",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p2",
+        "crop": "고추",
+        "work_type": "방제",
+        "amount": 2,
+        "unit": "L",
+        "missing": []
+      },
+      {
+        "id": "harvest",
+        "worked_at": "2026-09-08",
+        "parcel_id": "p1",
+        "crop": "토마토",
+        "work_type": "수확",
+        "amount": 12.5,
+        "unit": "kg",
+        "missing": []
+      },
+      {
+        "id": "year-end",
+        "worked_at": "2026-12-31",
+        "parcel_id": "p2",
+        "crop": "고추",
+        "work_type": "수확",
+        "amount": 8,
+        "unit": "kg",
+        "missing": []
+      },
+      {
+        "id": "leap-day",
+        "worked_at": "2024-02-29",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "파종",
+        "amount": 30,
+        "unit": "개",
+        "missing": []
+      },
+      {
+        "id": "invalid-date",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 10,
+        "unit": "L",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "no-unit",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "multi-parcel",
+        "worked_at": "2026-09-07",
+        "parcel_id": null,
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "multi-crop",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": null,
+        "work_type": "수확",
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "transplant",
+        "worked_at": "2026-09-09",
+        "parcel_id": "p2",
+        "crop": "토마토",
+        "work_type": "정식",
+        "amount": 100,
+        "unit": "포기",
+        "missing": []
+      },
+      {
+        "id": "seed-grams",
+        "worked_at": "2026-09-10",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "파종",
+        "amount": 50,
+        "unit": "g",
+        "missing": []
+      },
+      {
+        "id": "next-year",
+        "worked_at": "2027-01-01",
+        "parcel_id": "p2",
+        "crop": "고추",
+        "work_type": "관수",
+        "amount": 3,
+        "unit": "L",
+        "missing": []
+      },
+      {
+        "id": "century-leap",
+        "worked_at": "2000-02-29",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": 1,
+        "unit": "kg",
+        "missing": []
+      },
+      {
+        "id": "century-invalid",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": 1,
+        "unit": "kg",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "no-date",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 5,
+        "unit": "L",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "no-parcel",
+        "worked_at": "2026-09-07",
+        "parcel_id": null,
+        "crop": "고추",
+        "work_type": "수확",
+        "amount": 2,
+        "unit": "kg",
+        "missing": [
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "no-crop",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": null,
+        "work_type": "관수",
+        "amount": 5,
+        "unit": "L",
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "no-work",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p2",
+        "crop": "토마토",
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "work_type"
+        ]
+      },
+      {
+        "id": "unsupported-unit",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "unsupported-crop",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": null,
+        "work_type": "수확",
+        "amount": 4,
+        "unit": "kg",
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "unsupported-work",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p2",
+        "crop": "고추",
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "work_type"
+        ]
+      },
+      {
+        "id": "unsupported-parcel",
+        "worked_at": "2026-09-07",
+        "parcel_id": null,
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": 2,
+        "unit": "kg",
+        "missing": [
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "two-dates",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 5,
+        "unit": "L",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "two-quantities",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "negative-quantity",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "zero-quantity",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "decimal-water",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p2",
+        "crop": "토마토",
+        "work_type": "관수",
+        "amount": 0.5,
+        "unit": "L",
+        "missing": []
+      }
+    ],
+    "opus_rows": [
+      {
+        "id": "normal",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 20,
+        "unit": "L",
+        "missing": []
+      },
+      {
+        "id": "missing",
+        "worked_at": null,
+        "parcel_id": null,
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "worked_at",
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "multiple",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "work_type"
+        ]
+      },
+      {
+        "id": "ambiguous",
+        "worked_at": null,
+        "parcel_id": null,
+        "crop": null,
+        "work_type": "관수",
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "worked_at",
+          "parcel_id",
+          "crop"
+        ]
+      },
+      {
+        "id": "spray",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p2",
+        "crop": "고추",
+        "work_type": "방제",
+        "amount": 2,
+        "unit": "L",
+        "missing": []
+      },
+      {
+        "id": "harvest",
+        "worked_at": "2026-09-08",
+        "parcel_id": "p1",
+        "crop": "토마토",
+        "work_type": "수확",
+        "amount": 12.5,
+        "unit": "kg",
+        "missing": []
+      },
+      {
+        "id": "year-end",
+        "worked_at": "2026-12-31",
+        "parcel_id": "p2",
+        "crop": "고추",
+        "work_type": "수확",
+        "amount": 8,
+        "unit": "kg",
+        "missing": []
+      },
+      {
+        "id": "leap-day",
+        "worked_at": "2024-02-29",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "파종",
+        "amount": 30,
+        "unit": "개",
+        "missing": []
+      },
+      {
+        "id": "invalid-date",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 10,
+        "unit": "L",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "no-unit",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "multi-parcel",
+        "worked_at": "2026-09-07",
+        "parcel_id": null,
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 20,
+        "unit": "L",
+        "missing": [
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "multi-crop",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": null,
+        "work_type": "수확",
+        "amount": 5,
+        "unit": "kg",
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "transplant",
+        "worked_at": "2026-09-09",
+        "parcel_id": "p2",
+        "crop": "토마토",
+        "work_type": "정식",
+        "amount": 100,
+        "unit": "포기",
+        "missing": []
+      },
+      {
+        "id": "seed-grams",
+        "worked_at": "2026-09-10",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "파종",
+        "amount": 50,
+        "unit": "g",
+        "missing": []
+      },
+      {
+        "id": "next-year",
+        "worked_at": "2027-01-01",
+        "parcel_id": "p2",
+        "crop": "고추",
+        "work_type": "관수",
+        "amount": 3,
+        "unit": "L",
+        "missing": []
+      },
+      {
+        "id": "century-leap",
+        "worked_at": "2000-02-29",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": 1,
+        "unit": "kg",
+        "missing": []
+      },
+      {
+        "id": "century-invalid",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": 1,
+        "unit": "kg",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "no-date",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 5,
+        "unit": "L",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "no-parcel",
+        "worked_at": "2026-09-07",
+        "parcel_id": null,
+        "crop": "고추",
+        "work_type": "수확",
+        "amount": 2,
+        "unit": "kg",
+        "missing": [
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "no-crop",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": null,
+        "work_type": "관수",
+        "amount": 5,
+        "unit": "L",
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "no-work",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p2",
+        "crop": "토마토",
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "work_type"
+        ]
+      },
+      {
+        "id": "unsupported-unit",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "unsupported-crop",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": null,
+        "work_type": "수확",
+        "amount": 4,
+        "unit": "kg",
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "unsupported-work",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p2",
+        "crop": "고추",
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "work_type"
+        ]
+      },
+      {
+        "id": "unsupported-parcel",
+        "worked_at": "2026-09-07",
+        "parcel_id": null,
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": 2,
+        "unit": "kg",
+        "missing": [
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "two-dates",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 5,
+        "unit": "L",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "two-quantities",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "negative-quantity",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "zero-quantity",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p1",
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "decimal-water",
+        "worked_at": "2026-09-07",
+        "parcel_id": "p2",
+        "crop": "토마토",
+        "work_type": "관수",
+        "amount": 0.5,
+        "unit": "L",
+        "missing": []
+      }
+    ]
+  },
+  "blind_10": {
+    "engine": "farm-log core.mjs rules",
+    "spark": [
+      10,
+      70,
+      70
+    ],
+    "opus": [
+      8,
+      67,
+      70
+    ],
+    "opus_misses": [
+      [
+        "b03",
+        "amount",
+        "exp=None",
+        "got=15"
+      ],
+      [
+        "b03",
+        "unit",
+        "exp=None",
+        "got=L"
+      ],
+      [
+        "b08",
+        "worked_at",
+        "exp=2026-10-08",
+        "got=None"
+      ]
+    ],
+    "spark_rows": [
+      {
+        "id": "b01",
+        "worked_at": "2026-10-02",
+        "parcel_id": "p2",
+        "crop": "상추",
+        "work_type": "파종",
+        "amount": 200,
+        "unit": "개",
+        "missing": []
+      },
+      {
+        "id": "b02",
+        "worked_at": null,
+        "parcel_id": null,
+        "crop": null,
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "worked_at",
+          "parcel_id",
+          "crop",
+          "work_type"
+        ]
+      },
+      {
+        "id": "b03",
+        "worked_at": "2026-10-03",
+        "parcel_id": "p1",
+        "crop": null,
+        "work_type": "관수",
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "b04",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "토마토",
+        "work_type": "수확",
+        "amount": 3,
+        "unit": "kg",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "b05",
+        "worked_at": "2026-10-04",
+        "parcel_id": "p2",
+        "crop": null,
+        "work_type": "수확",
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "b06",
+        "worked_at": "2026-10-05",
+        "parcel_id": "p1",
+        "crop": "고추",
+        "work_type": "방제",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "b07",
+        "worked_at": null,
+        "parcel_id": "p2",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 7,
+        "unit": "L",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "b08",
+        "worked_at": "2026-10-08",
+        "parcel_id": null,
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": 4,
+        "unit": "kg",
+        "missing": [
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "b09",
+        "worked_at": "2026-10-09",
+        "parcel_id": "p1",
+        "crop": "토마토",
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "work_type"
+        ]
+      },
+      {
+        "id": "b10",
+        "worked_at": "2026-12-24",
+        "parcel_id": "p2",
+        "crop": "토마토",
+        "work_type": "수확",
+        "amount": 1.5,
+        "unit": "kg",
+        "missing": []
+      }
+    ],
+    "opus_rows": [
+      {
+        "id": "b01",
+        "worked_at": "2026-10-02",
+        "parcel_id": "p2",
+        "crop": "상추",
+        "work_type": "파종",
+        "amount": 200,
+        "unit": "개",
+        "missing": []
+      },
+      {
+        "id": "b02",
+        "worked_at": null,
+        "parcel_id": null,
+        "crop": null,
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "worked_at",
+          "parcel_id",
+          "crop",
+          "work_type"
+        ]
+      },
+      {
+        "id": "b03",
+        "worked_at": "2026-10-03",
+        "parcel_id": "p1",
+        "crop": null,
+        "work_type": "관수",
+        "amount": 15,
+        "unit": "L",
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "b04",
+        "worked_at": null,
+        "parcel_id": "p1",
+        "crop": "토마토",
+        "work_type": "수확",
+        "amount": 3,
+        "unit": "kg",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "b05",
+        "worked_at": "2026-10-04",
+        "parcel_id": "p2",
+        "crop": null,
+        "work_type": "수확",
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "crop"
+        ]
+      },
+      {
+        "id": "b06",
+        "worked_at": "2026-10-05",
+        "parcel_id": "p1",
+        "crop": "고추",
+        "work_type": "방제",
+        "amount": null,
+        "unit": null,
+        "missing": []
+      },
+      {
+        "id": "b07",
+        "worked_at": null,
+        "parcel_id": "p2",
+        "crop": "상추",
+        "work_type": "관수",
+        "amount": 7,
+        "unit": "L",
+        "missing": [
+          "worked_at"
+        ]
+      },
+      {
+        "id": "b08",
+        "worked_at": null,
+        "parcel_id": null,
+        "crop": "상추",
+        "work_type": "수확",
+        "amount": 4,
+        "unit": "kg",
+        "missing": [
+          "parcel_id"
+        ]
+      },
+      {
+        "id": "b09",
+        "worked_at": "2026-10-09",
+        "parcel_id": "p1",
+        "crop": "토마토",
+        "work_type": null,
+        "amount": null,
+        "unit": null,
+        "missing": [
+          "work_type"
+        ]
+      },
+      {
+        "id": "b10",
+        "worked_at": "2026-12-24",
+        "parcel_id": "p2",
+        "crop": "토마토",
+        "work_type": "수확",
+        "amount": 1.5,
+        "unit": "kg",
+        "missing": []
+      }
+    ]
+  },
+  "caveats": [
+    "spark runs have authorship bias (cases authored by same agent; ssonda/farmlog-30 expected seen beforehand)",
+    "opus blind only on blind-10 and farmlog-30 text-only file",
+    "single run each, no pass^k",
+    "asymmetric tiers: free Spark medium vs paid Opus High",
+    "ssonda opus pilot model name unconfirmed (older run), opus5 only from ns set onward"
+  ]
+}
