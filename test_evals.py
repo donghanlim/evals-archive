@@ -412,6 +412,25 @@ def test_export_writes_once_and_is_idempotent():
     con.close()
 
 @check
+def test_export_same_minute_does_not_overwrite():
+    """같은 분에 연속 수용해도 파일명이 겹쳐 앞선 내용을 덮어쓰면 안 된다."""
+    con, ids = _fixture()
+    con.execute("INSERT INTO notes(item_id,summary,practical,terms,points,difficulty,generator,warnings,created_at)"
+                " VALUES(?,'요약2','실무2','[]','[\"p2\"]','intermediate','llm:test','[]',?)", (ids[1], E.now()))
+    con.commit()
+    vault = tempfile.mkdtemp()
+    E.record_decision(con, {"item_id": ids[0], "decision": "accepted"})
+    r1 = E.export(con, vault)
+    E.record_decision(con, {"item_id": ids[1], "decision": "accepted"})
+    r2 = E.export(con, vault)
+    assert r1["written"] == 1 and r2["written"] == 1, (r1, r2)
+    assert r1["path"] != r2["path"], f"같은 파일에 덮어썼다: {r1['path']}"
+    assert os.path.exists(r1["path"]) and os.path.exists(r2["path"])
+    assert "item0" in open(r1["path"], encoding="utf-8").read()
+    assert "item1" in open(r2["path"], encoding="utf-8").read()
+    con.close()
+
+@check
 def test_export_links_only_accepted_related():
     con, ids = _accepted_fixture()
     rel = E.related_items(con, ids[0], "item0", ["rag"])

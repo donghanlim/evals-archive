@@ -1102,9 +1102,12 @@ def related_items(con: sqlite3.Connection, item_id: int, title: str, topics: lis
     return out[:k]
 
 
-def render_markdown(con: sqlite3.Connection, rows: list[sqlite3.Row], stamp: datetime, run_stats: dict) -> str:
+def render_markdown(con: sqlite3.Connection, rows: list[sqlite3.Row], stamp: datetime, run_stats: dict,
+                    doc_name: str | None = None) -> str:
     tags = sorted({t for r in rows for t in json.loads(r["topics"])})
-    L = [f"# AI Evals 학습 업데이트 — {stamp.strftime('%Y-%m-%d_%H-%M')}", "",
+    # 문서 제목과 논리 경로는 실제 파일명과 일치시킨다. 파일명이 바뀌면 이 이름도 바뀐다.
+    name = doc_name or stamp.strftime("%Y-%m-%d_%H-%M-%S")
+    L = [f"# AI Evals 학습 업데이트 — {name}", "",
          "> 이 문서는 AI 에이전트·AI 서비스의 검증 및 평가 관련 신규 자료를 초보 AI 개발자, "
          "데이터사이언티스트, PM이 함께 학습할 수 있도록 정리한 운영용 노트입니다.", "",
          f"**이번 업데이트:** 신규 자료 {len(rows)}건  ",
@@ -1160,7 +1163,7 @@ def render_markdown(con: sqlite3.Connection, rows: list[sqlite3.Row], stamp: dat
           "- 피드 수집 실패가 있으면 실행 상태는 `partial` 로 기록하며, 다음 주기에서 해당 피드를 다시 시도합니다.",
           "", "---", "", "## 문서 정보", "", "| 항목 | 값 |", "| --- | --- |",
           f"| 생성 시각 | {datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')} |",
-          f"| 논리 저장 경로 | `evals 업데이트 자료/{stamp.strftime('%Y-%m-%d_%H-%M')}.md` |",
+          f"| 논리 저장 경로 | `evals 업데이트 자료/{name}.md` |",
           "| 중복 처리 | URL 정규화·콘텐츠 해시·제목 유사도를 순차 비교 |",
           "| 편집 목적 | Evals 개념 학습, 실무 적용, 변화 추적 |", ""]
     return "\n".join(L)
@@ -1183,9 +1186,16 @@ def export(con: sqlite3.Connection, vault: str = VAULT) -> dict:
 
     last = con.execute("SELECT stats FROM runs ORDER BY id DESC LIMIT 1").fetchone()
     stamp = datetime.now(KST)
-    body = render_markdown(con, rows, stamp, json.loads(last["stats"]) if last else {})
     os.makedirs(vault, exist_ok=True)
-    path = os.path.join(vault, f"{stamp.strftime('%Y-%m-%d_%H-%M')}.md")
+    # 같은 분에 연속 수용하면 같은 파일명으로 덮어쓴다. 초 단위에 sequence 를 붙여 겹치지 않게 한다.
+    base = stamp.strftime("%Y-%m-%d_%H-%M-%S")
+    path = os.path.join(vault, f"{base}.md")
+    seq = 1
+    while os.path.exists(path):
+        seq += 1
+        path = os.path.join(vault, f"{base}-{seq}.md")
+    doc_name = os.path.basename(path)[:-3]
+    body = render_markdown(con, rows, stamp, json.loads(last["stats"]) if last else {}, doc_name)
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as fh:      # 부분 기록 파일을 남기지 않는다
         fh.write(body)
