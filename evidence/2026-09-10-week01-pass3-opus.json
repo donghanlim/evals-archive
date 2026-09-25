@@ -1,0 +1,31 @@
+{
+  "experiment": "week01-pass3: 5 failure types x 3 repeats, Opus side",
+  "date": "2026-09-10 KST",
+  "model": "claude opus 5 high (claude.ai web, Pro, Opus 5 높음)",
+  "prompt": "core.mjs reconstructed rules-only prompt, same pack as Spark (opus-pass3-pack.md). Fresh new chat per trial.",
+  "inputs": {
+    "t1_d03": "2026-11-22 합성 1번 밭 상추와 토마토 파종 40 개",
+    "t2_d06": "2026-11-20 합성 1번 밭과 합성 2번 밭 고추 관수 9 L",
+    "t3_d14": "2026-11-16 합성 1번 밭 상추 관수 0 L",
+    "t4_d16": "2026-11-14 합성 5번 밭 토마토 수확 6 kg"
+  },
+  "expected": {
+    "t1": {"worked_at":"2026-11-22","parcel_id":"p1","crop":null,"work_type":"파종","amount":null,"unit":null,"missing":["crop"]},
+    "t2": {"worked_at":"2026-11-20","parcel_id":null,"crop":"고추","work_type":"관수","amount":null,"unit":null,"missing":["parcel_id"]},
+    "t3": {"worked_at":"2026-11-16","parcel_id":"p1","crop":"상추","work_type":"관수","amount":null,"unit":null,"missing":[]},
+    "t4": {"worked_at":"2026-11-14","parcel_id":null,"crop":"토마토","work_type":"수확","amount":6,"unit":"kg","missing":["parcel_id"]}
+  },
+  "trials": [
+    {"trial": 1, "source": "user pasted", "result": "5/5 full match"},
+    {"trial": 2, "source": "agent claude.ai new chat", "result": "5/5 full match"},
+    {"trial": 3, "source": "agent claude.ai new chat", "result": "5/5 full match"}
+  ],
+  "failure_type_scores": {
+    "F1_t1_work_type": {"criterion": "t1 work_type==파종", "passes": [true, true, true], "pass3": "3/3"},
+    "F2_t1_amount": {"criterion": "t1 amount==null and unit==null", "passes": [true, true, true], "pass3": "3/3"},
+    "F3_t2_amount": {"criterion": "t2 amount==null and unit==null", "passes": [true, true, true], "pass3": "3/3"},
+    "F4_t3_date": {"criterion": "t3 worked_at==2026-11-16", "passes": [true, true, true], "pass3": "3/3"},
+    "F5_t4_crop_amount": {"criterion": "t4 crop==토마토 and amount==6 and unit==kg", "passes": [true, true, true], "pass3": "3/3"}
+  },
+  "limitation": ["reconstructed prompt, clearer than R3 original, so R3 failures not reproduced by design", "opus web sampling params unknown"]
+}

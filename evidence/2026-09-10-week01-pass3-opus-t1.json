@@ -1,0 +1,11 @@
+{
+  "experiment": "week01-pass3 opus trial 1",
+  "date": "2026-09-10 KST",
+  "model": "claude opus 5 high (claude.ai web, Pro, user-pasted)",
+  "rows": [
+    {"id": "t1", "worked_at": "2026-11-22", "parcel_id": "p1", "crop": null, "work_type": "파종", "amount": null, "unit": null, "missing": ["crop"]},
+    {"id": "t2", "worked_at": "2026-11-20", "parcel_id": null, "crop": "고추", "work_type": "관수", "amount": null, "unit": null, "missing": ["parcel_id"]},
+    {"id": "t3", "worked_at": "2026-11-16", "parcel_id": "p1", "crop": "상추", "work_type": "관수", "amount": null, "unit": null, "missing": []},
+    {"id": "t4", "worked_at": "2026-11-14", "parcel_id": null, "crop": "토마토", "work_type": "수확", "amount": 6, "unit": "kg", "missing": ["parcel_id"]}
+  ]
+}

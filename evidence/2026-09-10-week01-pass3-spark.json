@@ -1,0 +1,33 @@
+{
+  "experiment": "week01-pass3: 5 failure types x 3 repeats, Spark side",
+  "date": "2026-09-10 KST",
+  "models": {"A": "muse-spark (this session family, 3 independent subagent trials, blind rules-only prompt)"},
+  "prompt_note": "Rules-only prompt operationalized from farm-log/src/core.mjs (parcels/crops/works/units/date/qty>0/ambiguous->null). Clearer than R3 original 'core.mjs text only'. So this is prompt-clarified stability, not strict R3 repeat.",
+  "inputs": {
+    "t1_d03": "2026-11-22 합성 1번 밭 상추와 토마토 파종 40 개",
+    "t2_d06": "2026-11-20 합성 1번 밭과 합성 2번 밭 고추 관수 9 L",
+    "t3_d14": "2026-11-16 합성 1번 밭 상추 관수 0 L",
+    "t4_d16": "2026-11-14 합성 5번 밭 토마토 수확 6 kg"
+  },
+  "expected": {
+    "t1_d03": {"worked_at":"2026-11-22","parcel_id":"p1","crop":null,"work_type":"파종","amount":null,"unit":null,"missing":["crop"]},
+    "t2_d06": {"worked_at":"2026-11-20","parcel_id":null,"crop":"고추","work_type":"관수","amount":null,"unit":null,"missing":["parcel_id"]},
+    "t3_d14": {"worked_at":"2026-11-16","parcel_id":"p1","crop":"상추","work_type":"관수","amount":null,"unit":null,"missing":[]},
+    "t4_d16": {"worked_at":"2026-11-14","parcel_id":null,"crop":"토마토","work_type":"수확","amount":6,"unit":"kg","missing":["parcel_id"]}
+  },
+  "trials": [
+    {"trial":1,"task_id":"70WDe6U7YmgULoTL","rows":[{"id":"t1","worked_at":"2026-11-22","parcel_id":"p1","crop":null,"work_type":"파종","amount":null,"unit":null,"missing":["crop"]},{"id":"t2","worked_at":"2026-11-20","parcel_id":null,"crop":"고추","work_type":"관수","amount":null,"unit":null,"missing":["parcel_id"]},{"id":"t3","worked_at":"2026-11-16","parcel_id":"p1","crop":"상추","work_type":"관수","amount":null,"unit":null,"missing":[]},{"id":"t4","worked_at":"2026-11-14","parcel_id":null,"crop":"토마토","work_type":"수확","amount":6,"unit":"kg","missing":["parcel_id"]}]},
+    {"trial":2,"task_id":"1GyljgwV5PW4Od0r","rows":[{"id":"t1","worked_at":"2026-11-22","parcel_id":"p1","crop":null,"work_type":"파종","amount":null,"unit":null,"missing":["crop"]},{"id":"t2","worked_at":"2026-11-20","parcel_id":null,"crop":"고추","work_type":"관수","amount":null,"unit":null,"missing":["parcel_id"]},{"id":"t3","worked_at":"2026-11-16","parcel_id":"p1","crop":"상추","work_type":"관수","amount":null,"unit":null,"missing":[]},{"id":"t4","worked_at":"2026-11-14","parcel_id":null,"crop":"토마토","work_type":"수확","amount":6,"unit":"kg","missing":["parcel_id"]}]},
+    {"trial":3,"task_id":"qROoBjmmDAfQ8zTV","rows":[{"id":"t1","worked_at":"2026-11-22","parcel_id":"p1","crop":null,"work_type":"파종","amount":null,"unit":null,"missing":["crop"]},{"id":"t2","worked_at":"2026-11-20","parcel_id":null,"crop":"고추","work_type":"관수","amount":null,"unit":null,"missing":["parcel_id"]},{"id":"t3","worked_at":"2026-11-16","parcel_id":"p1","crop":"상추","work_type":"관수","amount":null,"unit":null,"missing":[]},{"id":"t4","worked_at":"2026-11-14","parcel_id":null,"crop":"토마토","work_type":"수확","amount":6,"unit":"kg","missing":["parcel_id"]}]}
+  ],
+  "failure_type_scores": {
+    "F1_t1_work_type": {"criterion": "t1 work_type==파종", "passes": [true, true, true], "pass3": "3/3"},
+    "F2_t1_amount": {"criterion": "t1 amount==null and unit==null", "passes": [true, true, true], "pass3": "3/3"},
+    "F3_t2_amount": {"criterion": "t2 amount==null and unit==null", "passes": [true, true, true], "pass3": "3/3"},
+    "F4_t3_date": {"criterion": "t3 worked_at==2026-11-16", "passes": [true, true, true], "pass3": "3/3"},
+    "F5_t4_crop_amount": {"criterion": "t4 crop==토마토 and amount==6 and unit==kg", "passes": [true, true, true], "pass3": "3/3"}
+  },
+  "case_scores": {"t1": "3/3", "t2": "3/3", "t3": "3/3", "t4": "3/3"},
+  "opus_side": "not measured in this run (requires claude.ai web manual). Same 4 inputs + same rules prompt can be pasted for Opus 3 repeats.",
+  "limitation": ["subagent trials share model family/session, temperature unknown, not strictly independent sampling", "prompt clearer than R3, so R3 failures not reproduced by design", "opus side missing"]
+}
