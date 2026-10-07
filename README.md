@@ -1,29 +1,48 @@
-# evals-archive · evals 수집·20주 실습 기록
+# evals-archive · AI 품질검사 기록
 
-| 항목 | 값 |
+> AI가 "그럴듯하게" 답하는지가 아니라, **정해 둔 기준으로 재현 가능하게 맞는지**를 측정하고 기록하는 저장소입니다.
+> 작성: 저스팀(Justin Lim) · AI 서비스 기획자 / Vertical AI Builder
+
+## 이 저장소가 보여주는 것
+
+- **문제를 시험 문제로 바꾸는 일**: 실제 업무(입금 대조, 영농일지 기록)를 정답이 있는 시험 세트(golden set)와 채점 기준(rubric)으로 바꿉니다.
+- **결과보다 기준을 먼저 의심하는 습관**: 점수가 나오면 모델보다 먼저 채점 기준과 표본 크기를 확인합니다.
+- **실패와 한계를 함께 공개**: 모든 리포트에 표본 크기, 측정 횟수, 재현 한계를 적습니다. 틀린 해석은 다음 리포트에서 정정합니다.
+
+## 실측 리포트 (2026-09 ~)
+
+| # | 질문 | 결과 요약 | 리포트 |
+|---|---|---|---|
+| R1 | 입금 대조 엔진의 현재 기준선은? | 44케이스 중 15건 정답(34.1%). 실패 유형별로 분해 | [R1](docs/20-week-cycle-2026-09-07/reports/2026-09-07-r1-ssonda-baseline.md) |
+| R2 | 무료 모델이 유료 모델보다 "모르면 비워라" 과업에서 뒤지는가? | 소표본 파일럿에서 뒤지지 않음. 단, 출제자 편향 가능성 명시 | [R2](docs/20-week-cycle-2026-09-07/reports/2026-09-08-r2-llm-compare.md) |
+| R3 | 출제와 채점을 분리해 다시 재면? | 블라인드 20건에서 17/20 동점. R2의 격차는 재현되지 않음 | [R3](docs/20-week-cycle-2026-09-07/reports/2026-09-08-r3-blind2.md) |
+| R4 | 틀렸던 유형은 반복해도 틀리는가? | 실패 유형 3회 반복(pass^3) 측정, 프롬프트 명확화 조건에서 안정 | [R4](docs/20-week-cycle-2026-09-07/reports/2026-09-10-r4-pass3.md) |
+| R5 | 채점 기준이 결과를 얼마나 바꾸나? | 같은 답안 1,000건이 의미 기준 97.4%, 글자 포함 기준 72.6%. **기준만 바꿔 24.8%p 이동** | [R5](docs/20-week-cycle-2026-09-07/reports/2026-09-20-r5-typesafe-worktype.md) |
+| R6 | 선택지 개수와 '기타' 보기는 어떤 영향을 주나? | 11종 vs 8종, 2,000콜. R5의 부수 해석을 정정 | [R6](docs/20-week-cycle-2026-09-07/reports/2026-09-20-r6-scope-and-catchall.md) |
+
+모든 수치는 각 리포트의 조건(합성 데이터, 1회 측정 등)에서만 유효합니다. 실제 현장 데이터 성능이 아닙니다.
+
+## 일하는 방식
+
+1. **질문·가설** 한 문장으로 시작
+2. **시험 세트 고정**: 시드로 생성하거나 원본을 수정하지 않고 사용, SHA-256으로 고정
+3. **채점 분리**: 출제자와 채점자를 나누고, 채점 기준을 먼저 적음
+4. **증거 보관**: 실행 결과 원본 JSON을 [`evidence/`](evidence/)에, 재현 스크립트를 [`scripts/`](scripts/)에
+5. **한계·정정**: 표본·반복 수·재현 한계를 적고, 틀린 해석은 다음 리포트에서 바로잡음
+
+## 함께 보기
+
+- 테크블로그 연재 「AI 품질검사 일지」: https://blog.naver.com/justdoim
+- 적용 사례 서비스: [farm-log](https://github.com/donghanlim/farm-log)
+- 링크 모음: https://lnk.bio/justim
+
+## 저장소 구성 (실행하려는 분께)
+
+| 경로 | 내용 |
 |---|---|
-| 슬러그 | `evals-archive` |
-| 구역 | _SecondBrain/_personal/_portfolio/IT |
-| 로컬 | `/Users/justimmacbook/Documents/_SecondBrain/_personal/_portfolio/IT/evals-archive` |
-| GitHub | `donghanlim/evals-archive` |
-| 상태 | 수집 파이프라인 운영 · 20주 실습 2026-09-07 시작 |
-| 최종 갱신 | 2026-09-07 |
-
-## 현재 상태
-
-- evals 관련 자료 수집 파이프라인을 운영·관리한다.
-- 실습과 자가 포트폴리오 데이터는 `docs/20-week-cycle-2026-09-07/`에 주차별로 기록한다.
-- 과거 계획 구간은 `past/2026-08-03--2026-09-06.md`에 미착수 상태로 보존한다.
-- 새 cycle은 2026-09-07 월요일부터 20주간 진행한다.
-
-## 다음 행동
-
-- [x] Week 1 공통 스키마·최소 runner·쏜다 44케이스 기준선 완료
-- [ ] Week 2에서 냥민도감 trace·gate 최소 실행면 확정
-- [ ] 팜로그 실측 또는 장애 주입 사례 발생 시 v1 스키마 적합성 검토
-
-## 정본 링크
-
-- 진행관리·기록 허브: `~/Documents/_personal/portfolio/docs/projects/evals/`
-- 지식·결정: `~/Documents/_SecondBrain/wiki` (`#evals-archive`)
-- 원본·증빙: `./files/`
+| `docs/20-week-cycle-2026-09-07/` | 20주 실습 계획, 주차 기록, 실측 리포트 |
+| `docs/evals-verification-log/` | 블로그 연재 원고 |
+| `evidence/` | 실행 결과 원본 |
+| `scripts/` | 리포트별 재현 스크립트 |
+| `schema/golden.schema.json` | 시험 세트 공통 스키마 |
+| `evals.py`, `runner.py` | evals 관련 자료 수집 파이프라인과 최소 runner (`python -m pytest`) |
