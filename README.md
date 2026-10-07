@@ -3,8 +3,8 @@
 | 항목 | 값 |
 |---|---|
 | 슬러그 | `evals-archive` |
-| 구역 | _personal |
-| 로컬 | `/Users/justimmacbook/Documents/_personal/evals-archive` |
+| 구역 | _SecondBrain/_personal/_portfolio/IT |
+| 로컬 | `/Users/justimmacbook/Documents/_SecondBrain/_personal/_portfolio/IT/evals-archive` |
 | GitHub | `donghanlim/evals-archive` |
 | 상태 | 수집 파이프라인 운영 · 20주 실습 2026-09-07 시작 |
 | 최종 갱신 | 2026-09-07 |
@@ -25,5 +25,5 @@
 ## 정본 링크
 
 - 진행관리·기록 허브: `~/Documents/_personal/portfolio/docs/projects/evals/`
-- 지식·결정: `~/Documents/_personal/my_brain` (`#evals-archive`)
+- 지식·결정: `~/Documents/_SecondBrain/wiki` (`#evals-archive`)
 - 원본·증빙: `./files/`

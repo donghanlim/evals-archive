@@ -10,7 +10,7 @@
 
 | 계층 | 위치 |
 |---|---|
-| L1 지식·결정 | `~/Documents/_personal/my_brain` 의 관련 노트 (`#evals-archive` 태그) |
+| L1 지식·결정 | `~/Documents/_SecondBrain/wiki` 의 관련 노트 (`#evals-archive` 태그) |
 | L2 원본·증빙 | `./files/` (심볼릭 링크, git 제외) |
 | L3 코드·증거 | 이 저장소의 `src/` `docs/` `evidence/` |
 
